@@ -8,12 +8,17 @@ import * as BooksAPI from './utils/BooksAPI'
 import sortBy from 'sort-by'
 
 class AllBookShelves extends Component {
+  // consolidatedBookShelf is essentially the collection when the main page loads.
+  // Its being used as a quick object value lookup when key (bookId) is provided, when moving books
+  // between shelves. In that operation, the PUT only returns the bookId and an apropriate view
+  // reconciliation between the PUT response and the target shelf is not easy.
+  // This does go against the philosophy of not having duplicative strategy
   state= {
     currentlyReadingBookshelf : [],
     wantToReadBookshelf : [],
     readBookshelf : [],
     consolidatedBookShelf : []
-  }
+  };
 
   getBooksByShelf (books, shelf)  {
     return books.filter((book) => {
@@ -30,24 +35,26 @@ class AllBookShelves extends Component {
   updateBookShelvesById (bookShelves) {
     // bookShelves looks like { currentlyReading:['id1','id2'], wantToRead:['id3']..}
     for (let bookShelfType in bookShelves) {
-      switch (bookShelfType) {
-        case 'currentlyReading':
-          this.setState({
-            currentlyReadingBookshelf: this.mapBookIdsToBooks(bookShelves, bookShelfType)
-          })
-          break;
-        case 'wantToRead':
-          this.setState({
-            wantToReadBookshelf : this.mapBookIdsToBooks(bookShelves, bookShelfType)
-          })
-          break;
-        case 'read':
-          this.setState({
-            readBookshelf : this.mapBookIdsToBooks(bookShelves, bookShelfType)
-          })
-          break;
-        default:
-          break;
+      if (bookShelves.hasOwnProperty(bookShelfType)) {
+        switch (bookShelfType) {
+          case 'currentlyReading':
+            this.setState({
+              currentlyReadingBookshelf: this.mapBookIdsToBooks(bookShelves, bookShelfType)
+            });
+            break;
+          case 'wantToRead':
+            this.setState({
+              wantToReadBookshelf : this.mapBookIdsToBooks(bookShelves, bookShelfType)
+            });
+            break;
+          case 'read':
+            this.setState({
+              readBookshelf : this.mapBookIdsToBooks(bookShelves, bookShelfType)
+            });
+            break;
+          default:
+            break;
+        }
       }
     }
   }

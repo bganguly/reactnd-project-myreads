@@ -10,11 +10,8 @@ import sortBy from 'sort-by'
 class SearchBooks extends Component {
   state= {
     books : [],
-    // currentlyReadingBookshelf : [],
-    // wantToReadBookshelf : [],
-    // readBookshelf : [],
     query: '',
-  }
+  };
 
   searchBooksByQuery(query) {
     BooksAPI.search(query).then(booksForQuery => {
@@ -31,17 +28,17 @@ class SearchBooks extends Component {
   }
 
   updateQuery(query) {
-    this.setState( {query: query.trim()})
-    this.searchBooksByQuery(query)
+    this.setState( {query: query.trim()});
+    this.searchBooksByQuery(query);
   }
 
   render () {
-    const { books, query } = this.state
+    const { books, query } = this.state;
 
-    let showingBooks = []
+    let showingBooks = [];
     if (query) {
       if (Array.isArray(books)) {
-        showingBooks = books
+        showingBooks = books;
         showingBooks.sort(sortBy('title'))
       } else {
         showingBooks = []
