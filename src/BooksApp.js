@@ -1,6 +1,6 @@
 import React, { Component }  from 'react'
 import { Route } from 'react-router-dom'
-import AllBookShelves from './AllBookShelves'
+import AllBookShelves from './AllBookShelves.js'
 import SearchBooks from './SearchBooks'
 import './App.css'
 

@@ -26,11 +26,7 @@ class SearchBooks extends Component {
 
   updateBookByShelf(book, shelf) {
     BooksAPI.update(book, shelf).then(bookShelves => {
-      // this.setState({
-      //   currentlyReadingBookshelf: bookShelves['currentlyReading'],
-      //   wantToReadBookshelf : bookShelves['wantToRead'],
-      //   readBookshelf : bookShelves['read']
-      // })
+      // do nothing with response
     })
   }
 
@@ -39,15 +35,8 @@ class SearchBooks extends Component {
     this.searchBooksByQuery(query)
   }
 
-  setBookshelf(book, shelf) {
-    this.updateBookByShelf(book, shelf)
-  }
-
   render () {
-    const { books, currentlyReadingwBookshelf,
-      wantToReadBookshelf, readBookshelf,
-      query } = this.state
-
+    const { books, query } = this.state
 
     let showingBooks = []
     if (query) {
@@ -78,15 +67,12 @@ class SearchBooks extends Component {
                 <div className="book">
                   <div className="book-top">
                     <div className="book-cover"
-                         style={{
-                           width: 128,
-                           height: 193,
-                           backgroundImage: `url(${book.imageLinks['smallThumbnail']})`
-                         }}></div>
+                         style={{backgroundImage: `url(${book.imageLinks['smallThumbnail']})`}}>
+                    </div>
                     <div className="book-shelf-changer">
                       <select
                         onChange={(event) =>
-                          this.setBookshelf(book, (event.target.value))}>
+                          this.updateBookByShelf(book, (event.target.value))}>
                         <option value="none" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>

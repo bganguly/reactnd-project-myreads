@@ -21,7 +21,7 @@ class AllBookShelves extends Component {
     }).sort(sortBy('title'))
   }
 
-  updateBooksByShelf(book, currentShelf, targetShelf) {
+  updateBooksByShelf(book, targetShelf) {
     BooksAPI.update(book, targetShelf).then(bookShelves => {
       this.updateBookShelvesById(bookShelves)
     })
@@ -45,6 +45,8 @@ class AllBookShelves extends Component {
           this.setState({
             readBookshelf : this.mapBookIdsToBooks(bookShelves, bookShelfType)
           })
+          break;
+        default:
           break;
       }
     }
@@ -70,7 +72,7 @@ class AllBookShelves extends Component {
   }
 
   render () {
-    const {currentlyReadingBookshelf, wantToReadBookshelf, readBookshelf, consolidatedBookShelf} = this.state
+    const {currentlyReadingBookshelf, wantToReadBookshelf, readBookshelf} = this.state
 
     return (
       <div className="list-books">
@@ -91,9 +93,9 @@ class AllBookShelves extends Component {
                                style={{backgroundImage: `url(${book.imageLinks['smallThumbnail']})` }}>
                           </div>
                           <div className="book-shelf-changer">
-                            <select
+                            <select value="currentlyReading"
                               onChange={(event) =>
-                                this.updateBooksByShelf(book, null, (event.target.value))}>
+                                this.updateBooksByShelf(book,  (event.target.value))}>
                               <option value="none" disabled>Move to...</option>
                               <option value="currentlyReading">Currently Reading</option>
                               <option value="wantToRead">Want to Read</option>
@@ -122,9 +124,9 @@ class AllBookShelves extends Component {
                                style={{backgroundImage: `url(${book.imageLinks['smallThumbnail']})` }}>
                           </div>
                           <div className="book-shelf-changer">
-                            <select
+                            <select value="wantToRead"
                               onChange={(event) =>
-                                this.updateBooksByShelf(book, null, (event.target.value))}>
+                                this.updateBooksByShelf(book,  (event.target.value))}>
                               <option value="none" disabled>Move to...</option>
                               <option value="currentlyReading">Currently Reading</option>
                               <option value="wantToRead">Want to Read</option>
@@ -153,9 +155,9 @@ class AllBookShelves extends Component {
                                style={{backgroundImage: `url(${book.imageLinks['smallThumbnail']})` }}>
                           </div>
                           <div className="book-shelf-changer">
-                            <select
+                            <select value="read"
                               onChange={(event) =>
-                                this.updateBooksByShelf(book, null, (event.target.value))}>
+                                this.updateBooksByShelf(book,  (event.target.value))}>
                               <option value="none" disabled>Move to...</option>
                               <option value="currentlyReading">Currently Reading</option>
                               <option value="wantToRead">Want to Read</option>
