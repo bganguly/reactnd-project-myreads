@@ -11,6 +11,7 @@ class SearchBooks extends Component {
   state= {
     books : [],
     query: '',
+    consolidatedBookShelf : []
   };
 
   searchBooksByQuery(query) {
@@ -24,6 +25,8 @@ class SearchBooks extends Component {
   updateBookByShelf(book, shelf) {
     BooksAPI.update(book, shelf).then(bookShelves => {
       // do nothing with response
+      // the API update call updates the bookshelves, which is read in correctly by each of the
+      // three individul components from the server and rendered
     })
   }
 
@@ -32,14 +35,36 @@ class SearchBooks extends Component {
     this.searchBooksByQuery(query);
   }
 
+  findMatchingBookOnShelfAndSearchResults (eachSearchBookResult) {
+    return this.state.consolidatedBookShelf.find((book) => {
+      return book.id === eachSearchBookResult.id;
+    })
+  }
+
+  getMatchingShelfForSearchResultsBook (eachSearchBookResult) {
+    const matchedBook = this.findMatchingBookOnShelfAndSearchResults(eachSearchBookResult);
+    if (typeof matchedBook !== 'undefined') {
+      return matchedBook.shelf
+    } else {
+      return 'Move to..'
+    }
+  }
+
+  componentDidMount () {
+    BooksAPI.getAll().then ( (books) => {
+      this.setState({
+        consolidatedBookShelf : books
+      })
+    })
+  }
+
   render () {
     const { books, query } = this.state;
 
     let showingBooks = [];
     if (query) {
       if (Array.isArray(books)) {
-        showingBooks = books;
-        showingBooks.sort(sortBy('title'))
+        showingBooks = books.sort(sortBy('title'));
       } else {
         showingBooks = []
       }
@@ -51,9 +76,9 @@ class SearchBooks extends Component {
           <Link to="/" className="close-search">Close </Link>
           <div className="search-books-input-wrapper">
             <input type="text"
-                   placeholder="Search by title or author"
-                   value={query}
-                   onChange={(event) => this.updateQuery((event.target.value))}
+               placeholder="Search by title or author"
+               value={query}
+               onChange={(event) => this.updateQuery((event.target.value))}
             />
           </div>
         </div>
@@ -67,10 +92,12 @@ class SearchBooks extends Component {
                          style={{backgroundImage: `url(${book.imageLinks['smallThumbnail']})`}}>
                     </div>
                     <div className="book-shelf-changer">
-                      <select
-                        onChange={(event) =>
+                      <select  value={this.getMatchingShelfForSearchResultsBook(book)}
+                         onChange={(event) =>
                           this.updateBookByShelf(book, (event.target.value))}>
-                        <option value="none" disabled>Move to...</option>
+                        <option value="none" disabled>
+                          Move to...
+                        </option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
                         <option value="read">Read</option>
